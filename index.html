@@ -18,6 +18,32 @@
             height:100%;
             overflow: hidden;
         }
+        ul{
+            list-style: none;
+        }
+        select,input{
+            padding:3px;
+        }
+        #config{
+            width:90%;
+            min-with:800px;
+            min-height:200px;
+            margin:20px auto;
+            padding:10px;
+            border-radius:10px;
+            border:1px solid #CCC;
+        }
+        #config ul li{
+            padding:2px 0;
+        }
+        #config ul li span{
+            display: inline-block;
+            width:150px;
+            font-size:14px;
+            font-weight: bolder;
+            text-align: right;
+            padding-right:10px;
+        }
         #content{
             width:100%;
         }
@@ -27,6 +53,29 @@
     </style>
 </head>
 <body>
+    <div id="config">
+        <ul>
+            <li>
+                <span>切换效果</span>
+                <select>
+                    <option>SliderHorizontal 水平切换</option>
+                    <option>SliderVertical 竖直切换</option>
+                </select>
+            </li>
+            <li>
+                <span>单幅图片停留时间</span>
+                <input type="text" value="4s">
+            </li>
+            <li>
+                <span>图片切换持续时间</span>
+                <input type="text" value="0.2s">
+            </li>
+            <li>
+                <span>自动播放</span>
+                <input type="checkbox" checked>
+            </li>
+        </ul>
+    </div>
     <div id="content">
         <div id="div_slider_wapper">
             <img src="assets/img/8.jpg" data-text="Here is Image 1.">
@@ -42,7 +91,7 @@
         $("#div_slider_wapper").myCarousel({
             ImageWidth:550,
             duration:4000,
-            autoSwitch:true,
+            autoSwitch:false,
         });
     })
 </script>

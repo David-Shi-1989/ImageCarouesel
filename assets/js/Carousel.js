@@ -2,7 +2,7 @@
     factory.call(root,root.jQuery,plug);
 })(window,function ($,plug) {
     var __DEFAULT__ = {
-        switchDuration:200,//切换动画持续的时间
+        switchDuration:400,//切换动画持续的时间
         duration:2000,
         ImageWidth:500,
         scale:parseFloat(parseFloat(16/9).toFixed(2)),
