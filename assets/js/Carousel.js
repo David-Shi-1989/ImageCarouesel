@@ -2,9 +2,9 @@
     factory.call(root,root.jQuery,plug);
 })(window,function ($,plug) {
     var __DEFAULT__ = {
-        switchDuration:400,//切换动画持续的时间
-        duration:2000,
-        ImageWidth:500,
+        duration:400,//切换动画持续的时间
+        showTime:2000,
+        imageWidth:500,
         scale:parseFloat(parseFloat(16/9).toFixed(2)),
         effect:"sliderVertical",//图片切换效果:slideHorizontal,sliderVertical
         autoSwitch:true,//自动切换
@@ -44,15 +44,16 @@
             return $($(this).find("div."+this.className.outerWrapper));
         },
         _parameterCalculate:function () {
-            this.ImageHeight = parseFloat(this.ImageWidth / this.scale).toFixed(2);
+            this.ImageHeight = parseFloat(this.imageWidth / this.scale).toFixed(2);
             this.ImageCount = $(this).find("img").length;
+            this.isSwitching = false;
         },
         _uiRender:function () {
             //设置外层wrapper样式
-            $(this).addClass(this.className.mainContainer).width(this.ImageWidth);
+            $(this).addClass(this.className.mainContainer).width(this.imageWidth);
 
             //增加wrapper
-            var html = '<div class="'+this.className.outerWrapper+ '" style="width:'+this.ImageWidth+'px;height:'+this.ImageHeight+'px;">';
+            var html = '<div class="'+this.className.outerWrapper+ '" style="width:'+this.imageWidth+'px;height:'+this.ImageHeight+'px;">';
                 html += '<div class="'+this.className.innerWrapper+'" data-index="0">';
                     html += $(this).html() + '<div class="clr"></div>';
                 html += '</div>';//end of innerWrapper
@@ -62,7 +63,7 @@
 
             switch(this.effect){
                 case "slideHorizontal":
-                    $innerWrapper.width(this.ImageCount * this.ImageWidth);
+                    $innerWrapper.width(this.ImageCount * this.imageWidth);
                     break;
                 case "sliderVertical":
                     $innerWrapper.height(this.ImageCount * this.ImageHeight);
@@ -93,7 +94,7 @@
             this._showDesText(activeIndex);
 
             //设置图片的宽度
-            $(this).find("img").width(this.ImageWidth);
+            $(this).find("img").width(this.imageWidth);
         },
         _bindEvent:function () {
             var _this = this;
@@ -121,7 +122,7 @@
         _switchTo:function (newIndex) {
             var currentIndex = this._getCurrentIndex();
             var newIndex = parseInt(newIndex);
-            if(currentIndex != newIndex){
+            if(currentIndex != newIndex && !this.isSwitching){
                 if(newIndex >= this.ImageCount) newIndex = 0;
                 if(newIndex < 0) newIndex = this.ImageCount-1;
                 this._switchImgWithAnimate(currentIndex,newIndex);
@@ -133,16 +134,22 @@
         //根据效果切换图片
         _switchImgWithAnimate:function (oldIndex,newIndex) {
             this._stopAutoSwitch();
+            this.isSwitching = true;
+            var _this = this;
             switch(this.effect){
                 case "slideHorizontal":
-                    var dis = (oldIndex-newIndex)*this.ImageWidth;
+                    var dis = (oldIndex-newIndex)*this.imageWidth;
                     var $wrapper = this._getInnerWrapper();
-                    $wrapper.animate({marginLeft:"+="+dis+"px"},this.switchDuration*Math.abs(oldIndex-newIndex)).attr("data-index",newIndex);
+                    $wrapper.animate({marginLeft:"+="+dis+"px"},this.duration,function () {
+                        _this.isSwitching = false;
+                    }).attr("data-index",newIndex);
                     break;
                 case "sliderVertical":
                     var dis = (oldIndex-newIndex)*this.ImageHeight;
                     var $wrapper = this._getInnerWrapper();
-                    $wrapper.animate({marginTop:"+="+dis+"px"},this.switchDuration*Math.abs(oldIndex-newIndex)).attr("data-index",newIndex);
+                    $wrapper.animate({marginTop:"+="+dis+"px"},this.duration,function () {
+                        _this.isSwitching = false;
+                    }).attr("data-index",newIndex);
                     break;
                 default:
                     break;
@@ -166,7 +173,7 @@
             var _this = this;
             this.INTERVAL = setInterval(function () {
                 _this._switchToNext();
-            },this.duration)
+            },_this.showTime)
         },
         _stopAutoSwitch:function () {
             clearInterval(this.INTERVAL);
@@ -196,6 +203,18 @@
                     },textLetterTime*i);
                 })(i);
             }
+        },
+
+        //还原
+        _revert:function () {
+            var $imgs = $(this).find("div."+this.className.innerWrapper).find("img");
+            var imgsHtml = "";
+            for(var i = 0;i<$imgs.length;i++){
+                var $curImg = $($imgs[i]);
+                imgsHtml += '<img src="'+$curImg.attr("src")+'" data-text="'+$curImg.data("text")+'">'
+            }
+            $(this).html(imgsHtml);
+            this._stopAutoSwitch();
         }
     };
 
@@ -205,5 +224,6 @@
         if(this.autoSwitch){
             this._bindAutoSwitch();
         }
+        window.myCarousel = this;
     }
 },"myCarousel");
