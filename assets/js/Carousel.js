@@ -4,9 +4,9 @@
     var __DEFAULT__ = {
         switchDuration:200,//切换动画持续的时间
         duration:2000,
-        width:500,
+        ImageWidth:500,
         scale:parseFloat(parseFloat(16/9).toFixed(2)),
-        effect:"slideHorizontal",//图片切换效果
+        effect:"sliderVertical",//图片切换效果:slideHorizontal,sliderVertical
         autoSwitch:true,//自动切换
     };
 
@@ -44,29 +44,37 @@
             return $($(this).find("div."+this.className.outerWrapper));
         },
         _parameterCalculate:function () {
-            this.HEIGHT = parseFloat(this.width / this.scale).toFixed(2);
-            this.SIZE = $(this).find("img").length;
+            this.ImageHeight = parseFloat(this.ImageWidth / this.scale).toFixed(2);
+            this.ImageCount = $(this).find("img").length;
         },
         _uiRender:function () {
             //设置外层wrapper样式
-            $(this).addClass(this.className.mainContainer).css("width",this.width);
+            $(this).addClass(this.className.mainContainer).width(this.ImageWidth);
 
             //增加wrapper
-            var html = '<div class="'+this.className.outerWrapper+ '" style="width:'+this.width+'px;">';
+            var html = '<div class="'+this.className.outerWrapper+ '" style="width:'+this.ImageWidth+'px;height:'+this.ImageHeight+'px;">';
                 html += '<div class="'+this.className.innerWrapper+'" data-index="0">';
                     html += $(this).html() + '<div class="clr"></div>';
                 html += '</div>';//end of innerWrapper
             html += '</div>';//end of outerWrapper
             $(this).html(html);
             var $innerWrapper = this._getInnerWrapper();
-            $innerWrapper.width(this.SIZE * this.width);
+
+            switch(this.effect){
+                case "slideHorizontal":
+                    $innerWrapper.width(this.ImageCount * this.ImageWidth);
+                    break;
+                case "sliderVertical":
+                    $innerWrapper.height(this.ImageCount * this.ImageHeight);
+                    break;
+            }
 
             //添加dots
             var activeIndex = this._getCurrentIndex();
             var dotsHtml = '<div class="'+this.className.dotsContainerHorizontal+'">';
             dotsHtml += '<div class="'+this.className.dotsBtn+' '+this.className.dotsBtnPre+'"><span><i class="fa fa-angle-left"></i></span></div>';
             dotsHtml += '<div class="'+this.className.dotsContainer+'">';
-            for(var i=0;i<this.SIZE;i++){
+            for(var i=0;i<this.ImageCount;i++){
                 var className = i == activeIndex ? "active":"";
                 dotsHtml += __DOTS_TPL__.STYLE1.replace("_DOTS_CLASS_NAME_",className);
             }
@@ -85,7 +93,7 @@
             this._showDesText(activeIndex);
 
             //设置图片的宽度
-            $(this).find("img").width(this.width);
+            $(this).find("img").width(this.ImageWidth);
         },
         _bindEvent:function () {
             var _this = this;
@@ -114,8 +122,8 @@
             var currentIndex = this._getCurrentIndex();
             var newIndex = parseInt(newIndex);
             if(currentIndex != newIndex){
-                if(newIndex >= this.SIZE) newIndex = 0;
-                if(newIndex < 0) newIndex = this.SIZE-1;
+                if(newIndex >= this.ImageCount) newIndex = 0;
+                if(newIndex < 0) newIndex = this.ImageCount-1;
                 this._switchImgWithAnimate(currentIndex,newIndex);
                 this._switchDots(currentIndex,newIndex);
                 this._renderCurrentDesText();
@@ -127,9 +135,14 @@
             this._stopAutoSwitch();
             switch(this.effect){
                 case "slideHorizontal":
-                    var dis = (oldIndex-newIndex)*this.width;
+                    var dis = (oldIndex-newIndex)*this.ImageWidth;
                     var $wrapper = this._getInnerWrapper();
                     $wrapper.animate({marginLeft:"+="+dis+"px"},this.switchDuration*Math.abs(oldIndex-newIndex)).attr("data-index",newIndex);
+                    break;
+                case "sliderVertical":
+                    var dis = (oldIndex-newIndex)*this.ImageHeight;
+                    var $wrapper = this._getInnerWrapper();
+                    $wrapper.animate({marginTop:"+="+dis+"px"},this.switchDuration*Math.abs(oldIndex-newIndex)).attr("data-index",newIndex);
                     break;
                 default:
                     break;
