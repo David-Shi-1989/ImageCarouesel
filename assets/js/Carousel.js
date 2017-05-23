@@ -182,7 +182,11 @@
         _getImgDesText:function(index){
             var activeIndex = this._getCurrentIndex();
             var text = $($(this).find("img")[activeIndex]).data("text");
-            return text.trim();
+            if(text) {
+                return text.trim();
+            }else{
+                return "";
+            }
         },
         _renderCurrentDesText:function () {
             var text = this._getImgDesText();
