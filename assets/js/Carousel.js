@@ -6,8 +6,12 @@
         showTime:2000,
         imageWidth:500,
         scale:parseFloat(parseFloat(16/9).toFixed(2)),
-        effect:"sliderVertical",//图片切换效果:slideHorizontal,sliderVertical
+        effect:"slideHorizontal",//图片切换效果:slideHorizontal,sliderVertical
         autoSwitch:true,//自动切换
+        events:{
+            beforeSwitch:null,
+            afterSwitch:null
+        }
     };
 
     var __DOTS_TPL__ = {
@@ -136,6 +140,9 @@
             this._stopAutoSwitch();
             this.isSwitching = true;
             var _this = this;
+            if(typeof(this.events.beforeSwitch) == "function"){
+                this.events.beforeSwitch.call({oldIndex:oldIndex,newIndex:newIndex});
+            }
             switch(this.effect){
                 case "slideHorizontal":
                     var dis = (oldIndex-newIndex)*this.imageWidth;
@@ -156,6 +163,9 @@
             }
             if(this.autoSwitch) {
                 this._bindAutoSwitch();
+            }
+            if(typeof(this.events.afterSwitch) == "function"){
+                this.events.afterSwitch.call({oldIndex:oldIndex,newIndex:newIndex});
             }
         },
         _switchToNext:function () {

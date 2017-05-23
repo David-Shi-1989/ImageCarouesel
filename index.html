@@ -147,6 +147,11 @@
             showTime:showTime*1000,
             duration:duration*1000,
             autoSwitch:isAutoSwitch,
+            events:{
+                afterSwitch:function (arg) {
+                    console.log("events afterSwitch. "+this.oldIndex+"->"+this.newIndex);
+                }
+            }
         });
     }
 </script>
