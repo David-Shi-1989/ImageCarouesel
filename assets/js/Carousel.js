@@ -6,7 +6,7 @@
         showTime:2000,
         imageWidth:500,
         scale:parseFloat(parseFloat(16/9).toFixed(2)),
-        effect:"slideHorizontal",//图片切换效果:slideHorizontal,sliderVertical
+        effect:"sliderVertical",//图片切换效果:slideHorizontal,sliderVertical
         autoSwitch:true,//自动切换
         events:{
             beforeSwitch:null,
