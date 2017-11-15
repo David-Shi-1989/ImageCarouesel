@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="assets/css/Carousel.css">
+    <link rel="stylesheet" href="assets/css/vendor/font-awesome.min.css">
+    <script type="text/javascript" src="assets/js/jquery-1.10.2.min.js"></script>
+    <!--<script type="text/javascript" src="assets/js/jquery.mobile-1.4.5.min.js"></script>-->
+    <script type="text/javascript" src="assets/js/Carousel.js"></script>
+    <title>Carousel</title>
+    <style>
+        *{
+            padding:0;
+            margin:0;
+        }
+        html,body{
+            width:100%;
+            height:100%;
+            overflow: hidden;
+        }
+        ul{
+            list-style: none;
+        }
+        select,input{
+            padding:3px;
+        }
+        #config button{
+            padding:2px 10px;
+            background-color: #FFF;
+            border:1px solid #777;
+            cursor: pointer;
+            letter-spacing: 2px;
+            -webkit-border-radius:3px;
+            -moz-border-radius:3px;
+            border-radius:3px;
+            border-radius:3px;
+        }
+        #config button:hover{
+            background-color: #EEE;
+        }
+        #config{
+            width:90%;
+            min-with:800px;
+            min-height:200px;
+            margin:20px auto;
+            padding:10px;
+            border-radius:10px;
+            border:1px solid #CCC;
+        }
+        #config ul li{
+            padding:2px 0;
+        }
+        #config ul li span.c-title{
+            display: inline-block;
+            width:150px;
+            font-size:14px;
+            font-weight: bolder;
+            text-align: right;
+            padding-right:10px;
+        }
+        #config input{
+            text-align: right;
+        }
+        
+        #content{
+            width:100%;
+        }
+        #div_slider_wapper{
+            margin:40px auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="config">
+        <ul>
+            <li>
+                <span class="c-title">切换效果</span>
+                <select id="tb_effect">
+                    <option value="slideHorizontal">SliderHorizontal 水平切换</option>
+                    <option value="sliderVertical">SliderVertical 竖直切换</option>
+                </select>
+            </li>
+            <li>
+                <span class="c-title">图片宽度</span>
+                <input type="text" value="550" placeholder="550" id="tb_width">
+                <span>px</span>
+            </li>
+            <li>
+                <span class="c-title">单幅图片停留时间</span>
+                <input type="text" value="4" placeholder="4" id="tb_showTime">
+                <span>s</span>
+            </li>
+            <li>
+                <span class="c-title">图片切换持续时间</span>
+                <input type="text" value="0.2" placeholder="0.2" id="tb_duration">
+                <span>s</span>
+            </li>
+            <li>
+                <span class="c-title">自动播放</span>
+                <input type="checkbox" checked id="tb_isAuto">
+            </li>
+            <li style="width:150px;text-align: right;padding-top:30px;">
+                <button onclick="configOkBtn();">确定</button>
+            </li>
+        </ul>
+    </div>
+    <div id="content">
+        <div id="div_slider_wapper">
+            <img src="assets/img/8.jpg" data-text="Here is Image 1.">
+            <img src="assets/img/2.jpg" data-text="Here is Image 2.">
+            <img src="assets/img/3.jpg" data-text="这是图片3.">
+            <img src="assets/img/4.jpg" data-text="Here is Image 4.">
+            <img src="assets/img/5.jpg" data-text="Breaking Bad.">
+            <img src="assets/img/6.jpg" data-text="Walking Dead.">
+        </div>
+    </div>
+<script type="text/javascript">
+    $(function () {
+        $("#div_slider_wapper").myCarousel({
+            imageWidth:550,
+            showTime:4000,
+            duration:800,
+            autoSwitch:false,
+        });
+    });
+    function configOkBtn() {
+        var $TbWidth = $("#tb_width");
+        var width = parseFloat($TbWidth.val().length>0?$TbWidth.val():$TbWidth.attr("placeholder"));
+        $TbWidth.val(width);
+
+        var $TbShowTime = $("#tb_showTime");
+        var showTime = parseFloat($TbShowTime.val().length>0?$TbShowTime.val():$TbShowTime.attr("placeholder"));
+        $TbShowTime.val(showTime);
+
+        var $TbDuration = $("#tb_duration");
+        var duration = parseFloat($TbDuration.val().length>0?$TbDuration.val():$TbDuration.attr("placeholder"));
+        $TbDuration.val(duration);
+
+        var isAutoSwitch = document.getElementById("tb_isAuto").checked;
+
+        //恢复现场
+        myCarousel._revert();
+
+        $("#div_slider_wapper").myCarousel({
+            effect:$("#tb_effect").val().trim(),
+            imageWidth:width,
+            showTime:showTime*1000,
+            duration:duration*1000,
+            autoSwitch:isAutoSwitch,
+            events:{
+                afterSwitch:function (arg) {
+                    console.log("events afterSwitch. "+this.oldIndex+"->"+this.newIndex);
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
